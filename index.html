@@ -17,97 +17,115 @@
   </head>
   <body>
     <!-- Simple header with fixed tabs. -->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header
-                mdl-layout--fixed-tabs">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
       <header class="mdl-layout__header mdl-color--white">
         <div class="mdl-layout__header-row">
           <!-- Title -->
           <span class="mdl-layout-title material-icons mdl-color-text--red-500"><b>code</b></span>
           <span class="mdl-layout-title"><b>ZCdev</b> Portfolio</span>
-        </div>
-        <!-- Tabs -->
-        <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--white">
-          <a href="#fixed-tab-1" class="mdl-layout__tab is-active">About</a>
-          <a href="#fixed-tab-2" class="mdl-layout__tab">Code</a>
-          <a href="#fixed-tab-3" class="mdl-layout__tab">Design</a>
+          <!-- Spacer -->
+          <div class="mdl-layout-spacer"></div>
+          <!-- Navigation -->
+          <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <a class="mdl-navigation__link" href="#">Home</a>
+            <a class="mdl-navigation__link" href="#">Code</a>
+            <a class="mdl-navigation__link" href="#">Design</a>
+          </nav>
         </div>
       </header>
+      <div class="mdl-layout__drawer mdl-layout--small-screen-only">
+        <span class="mdl-layout-title"><b>ZCdev</b> Portfolio</span>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="#">Home</a>
+          <a class="mdl-navigation__link" href="#">Code</a>
+          <a class="mdl-navigation__link" href="#">Design</a>
+        </nav>
+      </div>
       <main class="mdl-layout__content mdl-color--white">
-        <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
-          <div class="page-content">
-            <!-- Content goes here -->
-            <section id="showcase-tab-1">
-              <div class="container">
-                <h1 class="big-text">ZCdev</h1>
-                <h1>Modern design,<br>intentional code.</h1>
-              </div>
-            </section>
+        <div class="page-content">
+          <!-- Content goes here -->
+          <section id="showcase-tab-1">
+            <div class="container">
+              <h1 class="big-text">ZCdev</h1>
+              <h1>Modern design,<br>intentional code.</h1>
+            </div>
+          </section>
 
-            <section id="personal">
-              <div class="container">
-                <img src="https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/NCzz6G1Yxiju2389m/closeup-of-hands-typing-working-on-a-laptop-computer-keyboard-with-black-keys-and-a-silver-screen-this-is-a-side-view-shot-shot-in-uhd-4k-3840x2160_ndvaicktg__F0000.png" alt="ZCdev">
-                <div class="text-box">
-                  <h2 class="section-title">A developer at heart.</h2>
-                  <p>
-                    ZCdev is the name I (Zachary Cowan) use for developing.
-                    The name provides an easily recognizable way for people to identify me as the developer of some code or design.
-                    Although code and design are typically regarded as separate, I stress the <a href="">benefits</a> of treating them as a package.
-                  </p>
-                </div>
+          <section id="personal">
+            <div class="container">
+              <img src="https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/NCzz6G1Yxiju2389m/closeup-of-hands-typing-working-on-a-laptop-computer-keyboard-with-black-keys-and-a-silver-screen-this-is-a-side-view-shot-shot-in-uhd-4k-3840x2160_ndvaicktg__F0000.png" alt="ZCdev">
+              <div class="text-box">
+                <h2 class="section-title">A developer at heart.</h2>
+                <p>
+                  ZCdev is the name I (Zachary Cowan) use for developing.
+                  The name provides an easily recognizable way for people to identify me as the developer of some code or design.
+                  Although code and design are typically regarded as separate, I stress the <a href="">benefits</a> of treating them as a package.
+                </p>
               </div>
-            </section>
+            </div>
+          </section>
 
-            <section id="quote">
-              <div class="container">
-                <img src="https://wallpapersite.com/images/wallpapers/code-3840x2160-program-programming-language-coding-java-4k-4192.jpg" alt="ZCdev">
-                <div class="text-box">
-                  <h2 class="section-title">"Your code should be a reflection of your design, and vice versa."</h2>
-                  <p>
-                    Design should not just look good; it should function well.
-                    If a design is pleasing to the eye but does not serve its purpose, it will ultimately fail.
-                    Each part of a design should be able to work well with the code.
-                  </p>
-                </div>
+          <section id="quote">
+            <div class="container">
+              <img src="https://wallpapersite.com/images/wallpapers/code-3840x2160-program-programming-language-coding-java-4k-4192.jpg" alt="ZCdev">
+              <div class="text-box">
+                <h2 class="section-title">"Your code should be a reflection of your design, and vice versa."</h2>
+                <p>
+                  Design should not just look good; it should function well.
+                  If a design is pleasing to the eye but does not serve its purpose, it will ultimately fail.
+                  Each part of a design should be able to work well with the code.
+                </p>
               </div>
-            </section>
+            </div>
+          </section>
 
-            <section id="links">
-              <div class="container">
-                <div class="box l">
-                  <img src="./images/ZCdev_twitter.svg" alt="ZCdev">
-                  <h2 class="section-title">Heading</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tincidunt, ex non malesuada hendrerit, turpis ligula sagittis nisl, in rhoncus dolor elit eu dolor.</p>
-                </div>
-                <div class="box">
-                  <img src="./images/ZCdev_twitter.svg" alt="ZCdev">
-                  <h2 class="section-title">Heading</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tincidunt, ex non malesuada hendrerit, turpis ligula sagittis nisl, in rhoncus dolor elit eu dolor.</p>
-                </div>
-                <div class="box r">
-                  <img src="./images/ZCdev_twitter.svg" alt="ZCdev">
-                  <h2 class="section-title">Heading</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tincidunt, ex non malesuada hendrerit, turpis ligula sagittis nisl, in rhoncus dolor elit eu dolor.</p>
-                </div>
+          <section id="links">
+            <div class="container">
+              <div class="box l">
+                <img src="http://joelcox.io/scripts/logos/c-logo.png" alt="ZCdev">
+                <h2 class="section-title">Code</h2>
+                <p>
+                  Coding is a language for math.
+                  With it, developers can do some very creative things.
+                  And just like any other language, coding is used to communicate with people.
+                </p>
+                <a href="#">
+                  <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Learn more</button>
+                </a>
               </div>
-            </section>
+              <div class="box">
+                <img src="https://www.shareicon.net/download/2015/08/31/93660_psd.svg" alt="ZCdev">
+                <h2 class="section-title">Design</h2>
+                <p>
+                  Although coding is used to communicate with people, it is usually too complicated for anyone to care about it.
+                  Graphical designs allow developers to communicate their code in a much simpler way.
+                </p>
+                <a href="#">
+                  <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Learn more</button>
+                </a>
+              </div>
+              <div class="box r">
+                <img src="./images/ZCdev_twitter.svg" alt="ZCdev">
+                <h2 class="section-title">Publish</h2>
+                <p>
+                  Coding and designing are great.
+                  However, nobody cares unless they are able to see the final product.
+                  As a result, it is crucial for developers to publish their work so that others may enjoy it.
+                </p>
+                <a href="#">
+                  <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Learn more</button>
+                </a>
+              </div>
+            </div>
+          </section>
 
-            <footer class="site-footer">
-              <div class="container">
-                <p>Copyright &copy; 2017 Zachary Cowan. All rights reserved.</p>
-              </div>
-            </footer>
-          </div>
-        </section>
-        <section class="mdl-layout__tab-panel" id="fixed-tab-2">
-          <div class="page-content">
-            <!-- Content goes here -->
-          </div>
-        </section>
-        <section class="mdl-layout__tab-panel" id="fixed-tab-3">
-          <div class="page-content">
-            <!-- Content goes here -->
-          </div>
-        </section>
+          <footer class="site-footer">
+            <div class="container">
+              <p>Copyright &copy; 2017 Zachary Cowan. All rights reserved.</p>
+            </div>
+          </footer>
+          <!-- End of page -->
+        </div>
       </main>
     </div>
     <!-- JavaScript Reference -->
