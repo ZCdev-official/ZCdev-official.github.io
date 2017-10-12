@@ -76,13 +76,13 @@ body {
 
 h1 {
   font-weight: 200;
-  line-height: 1.3;
+  line-height: normal;
   font-size: 3.625rem;
 }
 
 h2 {
   font-weight: 100;
-  line-height: 1.3;
+  line-height: normal;
   font-size: 2.625rem;
 }
 
@@ -126,7 +126,7 @@ li {
 
 #showcase-tab-1 .big-text {
   font-size: 10.875rem;
-  line-height: 15rem;
+  line-height: normal;
 }
 
 /* Personal */
@@ -217,7 +217,7 @@ li {
 
 #showcase-tab-2 .big-text {
   font-size: 4.75rem;
-  line-height: 10rem;
+  line-height: normal;
 }
 
 /* Philosophy-card */
@@ -249,7 +249,7 @@ li {
 
 #showcase-tab-3 .big-text {
   font-size: 4.25rem;
-  line-height: 10rem;
+  line-height: normal;
 }
 
 #projects-page ul {
@@ -343,7 +343,7 @@ li {
 }
 
 /* Mobile Styles */
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1080px) {
   .text-box, .card-image, #links .box {
     width: 100%;
     float: none;
