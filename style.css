@@ -4,7 +4,7 @@ html {
 }
 
 body {
-  font-style: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   line-height: 24px;
   font-weight: 100;
@@ -18,11 +18,24 @@ body {
 
 /* Global */
 .container {
-  width: 80%;
+  width: 100%;
   margin: auto;
   overflow: hidden;
   box-sizing: border-box;
   display: block;
+}
+
+.container-small {
+  width: 60%;
+}
+
+.container-medium {
+  width: 80%;
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  background-size: cover;
 }
 
 .text-box {
@@ -58,14 +71,32 @@ a {
   text-decoration: none;
 }
 
+li {
+  text-decoration: none;
+  list-style-type: none;
+  display: inline;
+  padding: 3%;
+}
+
+.nav-link {
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #848484;
+}
+
+.nav-link:hover {
+  color: #448aff;
+}
+
 .section-title {
   color: #444;
 }
 
-/* Showcase */
+/* INDEX PAGE */
+/* Showcase-1 */
 #showcase-tab-1 {
   min-height: 400px;
-  background-image: url("https://wallpaperscraft.com/image/lights_night_city_blurring_9813_3840x2160.jpg");
+  background-image: url("./images/city.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -83,7 +114,7 @@ a {
 
 #showcase-tab-1 .big-text {
   font-size: 10.875rem;
-  line-height: 10rem;
+  line-height: 15rem;
 }
 
 /* Personal */
@@ -111,6 +142,10 @@ a {
 
 #personal .text-box {
   float: right;
+}
+
+#personal button {
+  color: #448aff;
 }
 
 /* Quote */
@@ -172,6 +207,144 @@ a {
 
 #links button {
   color: #448aff;
+}
+
+/* PHILOSOPHY PAGE */
+/* Showcase-2 */
+#showcase-tab-2 {
+  min-height: 400px;
+  background-image: url("./images/close_up.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  text-align: center;
+  color: #ffffff;
+}
+
+#showcase-tab-2 div {
+  padding: 7.5%;
+}
+
+#showcase-tab-2 h1 {
+  padding: 0 20%;
+}
+
+#showcase-tab-2 .big-text {
+  font-size: 4.75rem;
+  line-height: 10rem;
+}
+
+/* Philosophy-card */
+#philosophy-page .philosophy-card {
+  min-height: 400px;
+  background-color: #ffffff;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#philosophy-page .philosophy-card .text-box {
+  float: left;
+}
+
+#philosophy-page .philosophy-card h2 {
+  margin-right: 30%;
+}
+
+#philosophy-page .philosophy-card p {
+  margin-top: 4%;
+}
+
+#philosophy-page .alt {
+  background-color: #f5f5f5;
+}
+
+/* PROJECTS PAGE */
+/* Showcase-3 */
+#showcase-tab-3 {
+  min-height: 400px;
+  background-image: url("./images/office.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  text-align: center;
+  color: #ffffff;
+}
+
+#showcase-tab-3 div {
+  padding: 7.5%;
+}
+
+#showcase-tab-3 h1 {
+  padding: 0 20%;
+}
+
+#showcase-tab-3 .big-text {
+  font-size: 4.75rem;
+  line-height: 10rem;
+}
+
+#projects-page ul {
+  padding-top: 2%;
+  text-align: left;
+}
+
+#projects-page li {
+  padding-left: 1%;
+}
+
+/* Roblox */
+#roblox {
+  min-height: 400px;
+  background-color: #ffffff;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#roblox img {
+  width: 50%;
+  padding: 10% 0;
+  float: left;
+}
+
+#roblox h2{
+  padding-left: 5%;
+}
+
+#roblox p {
+  padding-left: 5%;
+  margin-right: 20%;
+}
+
+#roblox .text-box {
+  float: right;
+}
+
+/* Web */
+#web {
+  min-height: 400px;
+  background-color: #f5f5f5;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#web img {
+  width: 50%;
+  padding: 10% 0;
+  float: right;
+}
+
+#web h2{
+  padding-right: 5%;
+  margin-left: 20%;
+}
+
+#web p {
+  padding-right: 5%;
+  margin-left: 20%;
+}
+
+#web .text-box {
+  float: left;
 }
 
 /* Footer */
