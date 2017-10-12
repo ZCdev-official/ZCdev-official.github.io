@@ -343,12 +343,17 @@ li {
 }
 
 /* Mobile Styles */
-@media screen and (max-width: 760px) {
+@media only screen and (max-width: 768px) {
   .text-box, .card-image, #links .box {
     width: 100%;
     float: none;
     padding: 0;
     text-align: center;
+  }
+
+  .card-image {
+    width: 80%;
+    padding: 10% 10% 5% 10%;
   }
 
   .text-box {
@@ -388,12 +393,6 @@ li {
     font-size: .9rem;
   }
 
-  #showcase-tab-1, #showcase-tab-2, #showcase-tab-3 {
-    background-image: none;
-    background-color: #f5f5f5;
-    color: #757575;
-  }
-
   #showcase-tab-1 .big-text {
     font-size: 4.5rem;
     line-height: normal;
@@ -410,11 +409,6 @@ li {
     font-size: 2.25rem;
     line-height: normal;
     padding: 0;
-  }
-
-  .overlay {
-    background-color: rgba(0, 0, 0, 0);
-    background-size: cover;
   }
 
   #links .l, #links .r {
@@ -448,6 +442,6 @@ li {
 
   #projects-page li {
     padding-left: 0;
-    padding: 5% 0;
+    padding: 2% 0;
   }
 }
