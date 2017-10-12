@@ -121,7 +121,7 @@ li {
 /* INDEX PAGE */
 /* Showcase-1 */
 #showcase-tab-1 {
-  background-image: url("./images/city.jpg");
+  background-image: url("./portfolio/images/city.jpg");
 }
 
 #showcase-tab-1 .big-text {
@@ -212,7 +212,7 @@ li {
 /* PHILOSOPHY PAGE */
 /* Showcase-2 */
 #showcase-tab-2 {
-  background-image: url("./images/close_up.jpg");
+  background-image: url("./portfolio/images/close_up.jpg");
 }
 
 #showcase-tab-2 .big-text {
@@ -244,7 +244,7 @@ li {
 /* PROJECTS PAGE */
 /* Showcase-3 */
 #showcase-tab-3 {
-  background-image: url("./images/office.jpg");
+  background-image: url("./portfolio/images/office.jpg");
 }
 
 #showcase-tab-3 .big-text {
