@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- Site Data -->
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="A web portfolio of work by Zachary Cowan (ZCdev).">
+    <meta name="keywords" content="web portfolio, zachary cowan, zcdev">
+    <meta name="author" content="Zachary Cowan">
+    <title>ZCdev Code Examples</title>
+    <!-- Style Sheets -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-pink.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+      <div id="code-page">
+        <!-- Content goes here -->
+        <h1 style="font-weight: 400; text-align: center">ZCdev Code Examples</h1>
+        <p style="text-align: center">These are just a select few examples from my coding projects over the years.</p>
+
+        <section>
+          <div class="container container-medium">
+            <!--<img src="../images/unity.jpg" alt="">-->
+            <div class="text-box">
+              <h2>Player Object Code from Jump! - Infinte (C#)</h2>
+              <p>Date: 2017</p>
+              <pre>using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Analytics;
+using System.Collections.Generic;
+
+public class Player : MonoBehaviour
+{
+    //A reference to the player script
+    public static Player info;
+    //Constants
+    private const float JUMP_VELOCITY = 13.5f;
+    private const float IMMUNE_TIME = 8f;
+    private const int GEM_VALUE = 10;
+    //Components
+    private Rigidbody2D m_rb2d;
+    private BoxCollider2D m_bc2d;
+    private CircleCollider2D m_cc2d;
+    private Animator m_anim;
+    //Bools
+    private bool m_isJumping = false;
+    private bool m_isDoubleJumping = false;
+    private bool m_playerDead = false;
+    private bool m_playerImmune = false;
+    //Floats
+    private float m_posX;
+    private float m_posY;
+    private float m_immuneCounter = 0f;
+    private float deathTimer = 0f;
+    private float deathTimerLength = 0.75f;
+    private Collider2D m_groundCollider;
+
+    void Awake()
+    {
+        if (info == null)
+        {
+            info = this;
+        }
+        else if (info != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    // Use this for initialization
+    void Start()
+    {
+        m_rb2d = GetComponent<Rigidbody2D>();
+        m_bc2d = GetComponent<BoxCollider2D>();
+        m_cc2d = GetComponent<CircleCollider2D>();
+        m_anim = GetComponent<Animator>();
+        m_posX = transform.position.x;
+        m_posY = transform.position.y;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        transform.rotation = Quaternion.identity;
+        SetPosition(m_posX);
+        if (!m_playerDead && !GameController.instance.CheckIfGamePaused())
+        {
+            //Tells the player object to jump
+            foreach (Touch touch in Input.touches)
+            {
+                if (touch.phase == TouchPhase.Began)
+                {
+                    if (touch.position.y < (Screen.height - 300f) || touch.position.x < (Screen.width - 300f))
+                    {
+                        if (!m_isJumping && !m_isDoubleJumping)
+                        {
+                            m_isJumping = true;
+                            Jump();
+                        }
+                        else if (m_isJumping && !m_isDoubleJumping)
+                        {
+                            m_isDoubleJumping = true;
+                            Jump();
+                        }
+                    }
+                }
+            }
+
+        //   if(Input.GetMouseButtonDown(0)) {
+		//  		if (!GameController.instance.CheckIfGamePaused())
+		//  		{
+		//  			if (!m_isJumping && !m_isDoubleJumping)
+		//  			{
+		//  				m_isJumping = true;
+		//  				Jump();
+		//  			}
+		//  			else if (m_isJumping && !m_isDoubleJumping)
+		//  			{
+		//  				m_isDoubleJumping = true;
+		//  				Jump();
+		//  			}
+		//  		}
+        //      }
+            //Player object is immune to
+            if (m_playerImmune && m_immuneCounter <= IMMUNE_TIME)
+            {
+                GameController.instance.DisplayTimer(IMMUNE_TIME - m_immuneCounter);
+                m_immuneCounter += (Time.deltaTime/Time.timeScale);
+            }
+            else if (m_playerImmune && m_immuneCounter >= IMMUNE_TIME)
+            {
+                m_playerImmune = false;
+                m_immuneCounter = 0f;
+                GameController.instance.DisplayTimer(-1f);
+            }
+        }
+        //A timer that starts when the player dies and causes the player to fall after a set amount of time
+        else if (m_playerDead && (deathTimer < deathTimerLength))
+        {
+            deathTimer += Time.deltaTime;
+        }
+        else if (m_playerDead && (deathTimer >= deathTimerLength))
+        {
+            m_bc2d.enabled = false;
+            m_cc2d.enabled = false;
+            m_rb2d.gravityScale = 1f;
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground" && m_anim != null)
+        {
+            m_isJumping = false;
+            m_isDoubleJumping = false;
+            m_anim.SetBool("isJumping", false);
+        }
+        if (collision.gameObject.tag == "Danger" && !m_playerImmune && !m_playerDead)
+        {
+            Analytics.CustomEvent("playerDead", new Dictionary<string, object>
+		    {
+                {"collision", collision.gameObject.name},
+                {"roundCoins", NewDataPersistence.data.GetValue("Coins", true)},
+                {"roundKeys", NewDataPersistence.data.GetValue("Keys", true)},
+                {"gameSpeed", GameController.instance.GetTimeScale()},
+                {"roundScore", NewDataPersistence.data.GetValue("High Score", true)}
+		    });
+            m_playerDead = true;
+            collision.collider.enabled = false;
+            m_groundCollider = collision.collider;
+            m_anim.SetTrigger("isHit");
+            m_rb2d.gravityScale = 0f;
+            m_rb2d.velocity = Vector2.zero;
+            transform.position = new Vector2(m_posX, transform.position.y);
+            transform.rotation = Quaternion.identity;
+            GameController.instance.PlayerDead();
+        }
+    }
+
+    private void SetPosition(float positionX)
+    {
+        transform.position = new Vector2(positionX, transform.position.y);
+    }
+
+    public bool CheckIfPlayerDead()
+    {
+        if (m_playerDead)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void RewardPlayer(string type)
+    {
+        AudioOutput.manager.PlayClip("item sound", 1.5f, 2);
+        if (type == "Star")
+        {
+            m_playerImmune = true;
+        }
+        else if (type == "Gem")
+        {
+            NewDataPersistence.data.SetValue("Coins", (int)NewDataPersistence.data.GetValue("Coins", true) + GEM_VALUE, true);
+        }
+        else
+        {
+            NewDataPersistence.data.SetValue(type + "s", (int)NewDataPersistence.data.GetValue(type + "s", true) + 1, true);
+        }
+    }
+
+    public float GetDeathTimerLength()
+    {
+        return deathTimerLength;
+    }
+
+    private void Jump()
+    {
+        m_rb2d.velocity = Vector2.up * JUMP_VELOCITY;
+        m_anim.SetBool("isJumping", true);
+        AudioOutput.manager.PlayClip("jump sound", 2f, 1);
+    }
+}
+              </pre>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="container container-medium">
+            <!--<img src="../images/unity.jpg" alt="">-->
+            <div class="text-box">
+              <h2>Data Persistence Code from Jump! - Infinite (C#)</h2>
+              <p>Date: 2017</p>
+              <pre>using UnityEngine;
+using System.Collections.Generic;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using UnityEngine.SocialPlatforms;
+
+public class NewDataPersistence : MonoBehaviour {
+
+    public static NewDataPersistence data;
+
+    private const string FILE_NAME = "/playerInfo.dat";
+
+    private List<DataObject> m_dataList = new List<DataObject>();
+    private List<DataObject> m_roundDataList = new List<DataObject>();
+
+	private const string DEFAULT_CHARACTER_NAME = "Green Alien";
+    public DateTime currentDate;
+    public DateTime oldDate;
+    public DateTime timeSinceLastAdRewardTypeCurrency;
+    public DateTime timeSinceLastAdRewardTypeExtraLife;
+
+    //Makes the object a singleton (there can only be one)
+    void Awake()
+    {
+        if (data == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            data = this;
+        }
+        else if (data != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    // Use this for initialization
+    void Start () {
+        m_dataList.Add(new DataObject("int", "Coins", 0));
+        m_dataList.Add(new DataObject("int", "Keys", 0));
+        m_dataList.Add(new DataObject("float", "High Score", 0f));
+        m_dataList.Add(new DataObject("bool", DEFAULT_CHARACTER_NAME, true));
+        m_dataList.Add(new DataObject("bool", "Beige Alien", false));
+        m_dataList.Add(new DataObject("bool", "Blue Alien", false));
+        m_dataList.Add(new DataObject("bool", "Pink Alien", false));
+        m_dataList.Add(new DataObject("bool", "Yellow Alien", false));
+        m_dataList.Add(new DataObject("bool", "Red Alien", false));
+        m_dataList.Add(new DataObject("bool", "Panda", false));
+        m_roundDataList.Add(new DataObject("int", "Coins", 0));
+        m_roundDataList.Add(new DataObject("int", "Keys", 0));
+        m_roundDataList.Add(new DataObject("float", "High Score", 0f));
+        Load();
+		if (PlayerPrefs.GetString ("Character") == "") {
+			Debug.Log ("Set default character");
+			PlayerPrefs.SetString ("Character", DEFAULT_CHARACTER_NAME);
+		}
+        currentDate = System.DateTime.Now;
+        if (PlayerPrefs.GetString("oldDate") != "")
+        {
+            long temp = Convert.ToInt64(PlayerPrefs.GetString("oldDate"));
+            oldDate = DateTime.FromBinary(temp);
+            Debug.Log("Old Date: " + oldDate);
+        }
+        if (PlayerPrefs.GetString("timeSinceLastAdRewardTypeCurrency") != "") {
+            long temp = Convert.ToInt64(PlayerPrefs.GetString("timeSinceLastAdRewardTypeCurrency"));
+            timeSinceLastAdRewardTypeCurrency = DateTime.FromBinary(temp);
+            Debug.Log("Time Since Last Ad Reward Type Currency: " + timeSinceLastAdRewardTypeCurrency);
+        }
+        if (PlayerPrefs.GetString("timeSinceLastAdRewardTypeExtraLife") != "") {
+            long temp = Convert.ToInt64(PlayerPrefs.GetString("timeSinceLastAdRewardTypeExtraLife"));
+            timeSinceLastAdRewardTypeExtraLife = DateTime.FromBinary(temp);
+            Debug.Log("Time Since Last Ad Reward Type Extra Life: " + timeSinceLastAdRewardTypeExtraLife);
+        }
+        SocialPlatformController.controller.SetHighScore(GetValue("High Score", false));
+    }
+
+    public void Save()
+    {
+        if (File.Exists(Application.persistentDataPath + FILE_NAME))
+        {
+            File.Delete(Application.persistentDataPath + FILE_NAME);
+            Debug.Log("Old save file deleted");
+        }
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + FILE_NAME);
+        NewPlayerData saveData = new NewPlayerData();
+        foreach (DataObject listedData in m_dataList)
+        {
+            saveData.m_savedDataList.Add(listedData);
+        }
+        bf.Serialize(file, saveData);
+        file.Close();
+        Debug.Log("Saved");
+    }
+
+	public void Load()
+    {
+        if (File.Exists(Application.persistentDataPath + FILE_NAME))
+        {
+            //File.Delete(Application.persistentDataPath + FILE_NAME);
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + FILE_NAME, FileMode.Open);
+            NewPlayerData loadData = (NewPlayerData)bf.Deserialize(file);
+            file.Close();
+            foreach (DataObject savedData in loadData.m_savedDataList)
+            {
+                foreach (DataObject defaultData in m_dataList)
+                {
+                    if (defaultData.GetName() == savedData.GetName())
+                    {
+                        defaultData.SetValue(savedData.GetValue());
+                    }
+                }
+            }
+            Debug.Log("Loaded");
+        } else
+        {
+            Debug.Log("No save data found");
+        }
+    }
+
+    public void SetValue(string name, object value, bool isRoundValue)
+    {
+        if (isRoundValue)
+        {
+            foreach (DataObject listedData in m_roundDataList)
+            {
+                if (listedData.GetName() == name)
+                {
+                    listedData.SetValue(value);
+                }
+            }
+            GameController.instance.DisplayRoundItems((int)GetValue("Coins", true), (int)GetValue("Keys", true));
+        }
+        else
+        {
+            foreach (DataObject listedData in m_dataList)
+            {
+                if (listedData.GetName() == name)
+                {
+                    listedData.SetValue(value);
+                }
+            }
+        }
+    }
+
+    public object GetValue(string name, bool isRoundValue)
+    {
+        object returner = null;
+        if (isRoundValue)
+        {
+            foreach (DataObject listedData in m_roundDataList)
+            {
+                if (listedData.GetName() == name)
+                {
+                    returner = listedData.GetValue();
+                    break;
+                }
+            }
+        }
+        else
+        {
+            foreach (DataObject listedData in m_dataList)
+            {
+                if (listedData.GetName() == name)
+                {
+                    returner = listedData.GetValue();
+                    break;
+                }
+            }
+        }
+        return returner;
+    }
+
+    public void PlayerDead()
+    {
+        foreach (DataObject listedData in m_dataList)
+        {
+            foreach (DataObject roundData in m_roundDataList)
+            {
+                if (listedData.GetName() == roundData.GetName())
+                {
+                    if (listedData.GetValueType() == "int")
+                    {
+                        listedData.SetValue((int)listedData.GetValue() + (int)roundData.GetValue());
+                    }
+                    else if (listedData.GetValueType() == "float")
+                    {
+                        if ((int)(float)roundData.GetValue() > (int)(float)listedData.GetValue())
+                        {
+                            listedData.SetValue(roundData.GetValue());
+                            SocialPlatformController.controller.SetHighScore(GetValue("High Score", false));
+                        }
+                    }
+                }
+            }
+        }
+        Save();
+    }
+
+    public void ResetGame()
+    {
+        foreach (DataObject roundData in m_roundDataList)
+        {
+            if (roundData.GetValueType() == "int")
+            {
+                roundData.SetValue(0);
+            }
+            else if (roundData.GetValueType() == "float")
+            {
+                roundData.SetValue(0f);
+            }
+        }
+        Time.timeScale = 1f;
+    }
+
+    //Called when a player got an extra life
+    public void ModifiedResetGame()
+    {
+        foreach (DataObject listedData in m_dataList)
+        {
+            foreach (DataObject roundData in m_roundDataList)
+            {
+                if (listedData.GetName() == roundData.GetName())
+                {
+                    if (listedData.GetValueType() == "int")
+                    {
+                        listedData.SetValue((int)listedData.GetValue() - (int)roundData.GetValue());
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            if (GameController.instance && !Player.info.CheckIfPlayerDead())
+            {
+                GameController.instance.ChangeGamePauseState(true);
+            }
+            else
+            {
+                Save();
+            }
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (GameController.instance && Player.info.CheckIfPlayerDead())
+        {
+            Save();
+        }
+        else if (!GameController.instance)
+        {
+            Save();
+        }
+        PlayerPrefs.SetString("oldDate", System.DateTime.Now.ToBinary().ToString());
+        PlayerPrefs.SetString("timeSinceLastAdRewardTypeCurrency", timeSinceLastAdRewardTypeCurrency.ToBinary().ToString());
+        PlayerPrefs.SetString("timeSinceLastAdRewardTypeExtraLife", timeSinceLastAdRewardTypeExtraLife.ToBinary().ToString());
+        Debug.Log("Saved Date: " + System.DateTime.Now);
+    }
+
+    public double ComputeTimeDifference(DateTime firstDate, DateTime secondDate) {
+        TimeSpan difference = secondDate.Subtract(firstDate);
+        return difference.TotalMinutes;
+    }
+}
+
+[Serializable]
+class DataObject
+{
+    public DataObject(string type, string name, object value)
+    {
+        m_type = type;
+        m_name = name;
+        m_value = value;
+    }
+
+    private string m_type;
+    private string m_name;
+    private object m_value;
+
+    public string GetName()
+    {
+        return m_name;
+    }
+
+    public object GetValue()
+    {
+        return m_value;
+    }
+
+    public void SetValue(object value)
+    {
+        m_value = value;
+    }
+
+    public string GetValueType()
+    {
+        return m_type;
+    }
+}
+
+[Serializable]
+class NewPlayerData
+{
+    public List<DataObject> m_savedDataList = new List<DataObject>();
+}
+              </pre>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="container container-medium">
+            <!--<img src="../images/unity.jpg" alt="">-->
+            <div class="text-box">
+              <h2>Main Game Code from USFT (Roblox Lua)</h2>
+              <p>Date: unknown. Very old.</p>
+              <pre>local timer = game.Workspace.Timer
+local intermission = game.Workspace.Intermission
+local choose = game.Workspace.Choosing
+local mapname = game.Workspace.MapName
+local children = game.ReplicatedStorage:GetChildren()
+local count = #children
+local map = math.random(1,count)
+local maps = {"Classic - LordSpectrus","River Fight - SeizureMadness","Rugged Grassland - LordSpectrus","The Lonely River - Wizdani","Checkmate - Lagtistics","Snow World - LordSpectrus","Science Lab - Scalez","Stranded - Lagtistics","Mine - Xorez"}
+local items = {}
+
+
+while true do
+
+	while intermission.Value == true do
+		wait()
+		timer.Value = 180
+		game.Workspace.Wind:Play()
+
+		while timer.Value > 0 do
+			wait(1)
+			timer.Value = timer.Value - 1
+		end
+		timer.Value = 5
+		intermission.Value = false
+		choose.Value = true
+	end
+
+	while intermission.Value == false and choose.Value == true do
+		wait()
+		while timer.Value > 0 do
+			wait(1)
+			timer.Value = timer.Value - 1
+		end
+	for i=1,#maps do
+	local item = game.ReplicatedStorage:FindFirstChild(maps[i])
+		if item ~= nil and item:IsA("Model") then
+			item.Parent = nil
+			table.insert(items,item)
+		end
+	end
+	function chooseMap()
+		return items[math.random(#items)]
+	end
+	local a = chooseMap():clone()
+	a.Parent = game.Workspace
+	a:MakeJoints()
+	mapname.Value = a.Name
+	wait(3)
+	timer.Value = 60
+	choose.Value = false
+	local spawns = game.Workspace:FindFirstChild(mapname.Value).Spawns:GetChildren()
+	function chooseSpawn()
+		return spawns[math.random(1,#spawns)]
+	end
+	local players = game.Players:GetChildren()
+	for i=1,#players do
+		if players[i].Character:FindFirstChild("Torso") ~= nil then
+			players[i].Character.Torso.CFrame = chooseSpawn().CFrame
+		end
+	end
+	for i,v in pairs(game.Workspace.Spawns:GetChildren()) do
+		v.Neutral = false
+	end
+	game.Lighting.FogEnd = 100000
+	game.Workspace.Wind:Stop()
+	game.Workspace.BattleMusic:Play()
+	end
+
+	while intermission.Value == false and choose.Value == false do
+		wait()
+		while timer.Value > 0 do
+			wait(1)
+			timer.Value = timer.Value - 1
+		end
+		game.Workspace:FindFirstChild(mapname.Value):remove()
+		game.Workspace.BattleMusic:Stop()
+		game.Workspace.Wind:Play()
+		for i,v in pairs(game.Players:GetPlayers()) do
+		v.Character:BreakJoints()
+		end
+		for i,v in pairs(game.Workspace.Spawns:GetChildren()) do
+			v.Neutral = true
+		end
+		wait(5)
+		game.Lighting.FogEnd = 325
+		intermission.Value = true
+		mapname.Value = ""
+	end
+
+end
+              </pre>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="container container-medium">
+            <!--<img src="../images/unity.jpg" alt="">-->
+            <div class="text-box">
+              <h2>Cubed Setup Code (Roblox Lua)</h2>
+              <p>Date: unknown. Very old.</p>
+              <pre>local CubeSize = Vector3.new(3, 3, 3)
+_G.DefaultSpeed = 8
+local LocalSetup = script["Cube-Setup"]
+local Gui = script:WaitForChild("Gui")
+local PointsPerLevel = 4
+local ItemStorage = game.ReplicatedStorage:WaitForChild("Items")
+
+function createStat(type, name, location, value)
+	local x = Instance.new(type, location)
+	x.Name = name
+	x.Value = value
+end
+
+game.Players.PlayerAdded:connect(function(Player)
+	Player.CanLoadCharacterAppearance = false
+	---------------------------------------------------------
+	-----------------------[ Leaderstats ]-------------------
+	---------------------------------------------------------
+	local leaderstats = Instance.new("IntValue", Player)
+	leaderstats.Name = "leaderstats"
+	createStat("IntValue", "Level", leaderstats, 1)
+	createStat("IntValue", "Wins", leaderstats, 0)
+	createStat("BoolValue", "Stunned", Player, false)
+	---------------------------------------------------------
+	-----------------------[ Shop Values ]-------------------
+	---------------------------------------------------------
+	local shop = Instance.new("Folder", Player)
+	shop.Name = "shop"
+	local hats = Instance.new("Folder", shop)
+	hats.Name = "hats"
+	createStat("StringValue", "Chosen-Hat", hats, "Top Hat")
+	createStat("BoolValue", "Top Hat", hats, true)
+	createStat("BoolValue", "Fedora", hats, true)
+	local materials = Instance.new("Folder", shop)
+	materials.Name = "materials"
+	createStat("StringValue", "Chosen-Material", materials, "Plastic")
+	createStat("BoolValue", "Plastic", materials, true)
+	createStat("BoolValue", "Sand", materials, true)
+	local colors = Instance.new("Folder", shop)
+	colors.Name = "colors"
+	createStat("BrickColorValue", "Chosen-Color", colors, BrickColor.new("White"))
+	createStat("BoolValue", "White", colors, true)
+	createStat("BoolValue", "Black", colors, true)
+	createStat("BoolValue", "Bright red", colors, true)
+	local faces = Instance.new("Folder", shop)
+	faces.Name = "faces"
+	createStat("StringValue", "Chosen-Face", faces, "Default")
+	createStat("BoolValue", "Default", faces, true)
+	createStat("BoolValue", "Chill", faces, true)
+	---------------------------------------------------------
+	-----------------------[ Skills Values ]-----------------
+	---------------------------------------------------------
+	local skills = Instance.new("Folder", Player)
+	skills.Name = "skills"
+	createStat("IntValue", "Points", skills, PointsPerLevel)
+	createStat("IntValue", "Speed", skills, 0)
+	createStat("IntValue", "Energy", skills, 0)
+	createStat("IntValue", "Regen", skills, 0)
+	createStat("StringValue", "Ability", skills, "None")
+	Player.CharacterAdded:connect(function(Character)
+		---------------------------------------------------------
+		-----------------------[ Cube Setup ]--------------------
+		---------------------------------------------------------
+		Character:FindFirstChild("Right Arm"):remove()
+		Character:FindFirstChild("Right Leg"):remove()
+		Character:FindFirstChild("Left Arm"):remove()
+		Character:FindFirstChild("Left Leg"):remove()
+		Character:FindFirstChild("Head").Transparency = 1
+		Character.Head.face:remove()
+		Character:FindFirstChild("Torso").Size = CubeSize
+		Character:FindFirstChild("Torso").BrickColor = Player.shop.colors["Chosen-Color"].Value
+		Character:FindFirstChild("Torso").Material = Player.shop.materials["Chosen-Material"].Value
+		local face = ItemStorage.Faces:FindFirstChild(Player.shop.faces["Chosen-Face"].Value)
+		Character.Torso.roblox.Texture = face.Texture
+		local hat = ItemStorage.Hats:FindFirstChild(Player.shop.hats["Chosen-Hat"].Value)
+		hat:Clone().Parent = Character
+		LocalSetup:Clone().Parent = Player.PlayerGui
+		Character.Humanoid.WalkSpeed = _G.DefaultSpeed + Player.skills.Speed.Value
+		Character:WaitForChild("Health"):remove()
+		Character:WaitForChild("Sound"):remove()
+		Character:WaitForChild("Animate"):remove()
+		Character.Humanoid:WaitForChild("Animator"):remove()
+		Gui:Clone().Parent = Character.Head
+		local Weld = Instance.new("ManualWeld", Character.Head)
+		Weld.Part0 = Character.Head
+		Weld.Part1 = Character.Torso
+		Weld.C0 = CFrame.new(0, -1, 0)
+	end)
+end)
+              </pre>
+            </div>
+          </div>
+        </section>
+
+        <footer class="site-footer">
+          <div class="container container-medium">
+            <p>Copyright &copy; 2017 Zachary Cowan. All rights reserved.</p>
+          </div>
+        </footer>
+        <!-- End of page -->
+      </div>
+    </div>
+    <!-- JavaScript Reference -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  </body>
+</html>
